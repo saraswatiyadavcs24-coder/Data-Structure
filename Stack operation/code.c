@@ -12,7 +12,6 @@ void push() {
         printf("Enter data: ");
         scanf("%d", &x);
         stack[++top] = x;
-
         printf("%d pushed onto the stack.\n", x);
     }
 }
@@ -21,8 +20,15 @@ void pop() {
     if (top == -1) {
         printf("Stack Underflow! Cannot pop.\n");
     } else {
-
         printf("%d popped from the stack.\n", stack[top--]);
+    }
+}
+
+void peek() {
+    if (top == -1) {
+        printf("Stack is empty! Nothing to peek.\n");
+    } else {
+        printf("Top element is: %d\n", stack[top]);
     }
 }
 
@@ -43,8 +49,9 @@ int main() {
         printf("\nStack Operations Menu:\n");
         printf("1. Push\n");
         printf("2. Pop\n");
-        printf("3. Display\n");
-        printf("4. Exit\n");
+        printf("3. Peek\n");
+        printf("4. Display\n");
+        printf("5. Exit\n");
         printf("Enter your choice: ");
         scanf("%d", &choice);
 
@@ -56,9 +63,12 @@ int main() {
                 pop();
                 break;
             case 3:
-                display();
+                peek();
                 break;
             case 4:
+                display();
+                break;
+            case 5:
                 printf("Exiting the program.\n");
                 return 0;
             default:
