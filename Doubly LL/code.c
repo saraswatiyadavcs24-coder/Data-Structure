@@ -2,227 +2,159 @@
 #include <stdlib.h>
 
 struct Node {
-    int data;
-    struct Node *prev, *next;
+int data;
+struct Node *prev, *next;
 };
-
 
 struct Node *head = NULL;
 struct Node *tail = NULL;
 
-
 void createList(int n) {
-    int i, data;
-    struct Node *newNode;
+int i, data;
+struct Node *newNode;
 
-    for (i = 1; i <= n; i++) {
-        printf("Enter data for node %d: ", i);
-        scanf("%d", &data);
+for (i = 1; i <= n; i++) {
+printf("Enter data for node %d : ", i);
+scanf("%d", &data);
 
-        newNode = (struct Node*)malloc(sizeof(struct Node));
-        newNode->data = data;
-        newNode->prev = newNode->next = NULL;
+newNode = (struct Node*) malloc(sizeof(struct Node));
+newNode->data = data;
+newNode->prev = NULL;
+newNode->next = NULL;
 
-        if (head == NULL) {
-            head = tail = newNode;
-        } else {
-            tail->next = newNode;
-            newNode->prev = tail;
-            tail = newNode;
-        }
-    }
+if (head == NULL) {
+head = tail = newNode;
 }
-
+else {
+tail->next = newNode;
+newNode->prev = tail;
+tail = newNode;
+}
+}
+}
 
 void insertAtFront(int data) {
-    struct Node *newNode = (struct Node*)malloc(sizeof(struct Node));
-    newNode->data = data;
-    newNode->prev = NULL;
-    newNode->next = head;
+struct Node *newNode = (struct Node*) malloc(sizeof(struct Node));
 
-    if (head == NULL)
-        head = tail = newNode;
-    else {
-        head->prev = newNode;
-        head = newNode;
-    }
+newNode->data = data;
+newNode->prev = NULL;
+newNode->next = head;
+
+if (head != NULL) {
+head->prev = newNode;
+}
+else {
+tail = newNode;
+}
+head = newNode;
 }
 
+/* Insert to the LEFT of given value */
+void insertLeft(int key, int data) {
+struct Node *temp = head;
+struct Node *newNode;
 
-void insertAtEnd(int data) {
-    struct Node *newNode = (struct Node*)malloc(sizeof(struct Node));
-    newNode->data = data;
-    newNode->next = NULL;
-    newNode->prev = tail;
-
-    if (tail == NULL)
-        head = tail = newNode;
-    else {
-        tail->next = newNode;
-        tail = newNode;
-    }
+while (temp != NULL && temp->data != key) {
+temp = temp->next;
 }
 
-
-void insertAtPosition(int data, int pos) {
-    int i;
-    struct Node *newNode, *temp = head;
-
-    if (pos == 1) {
-        insertAtFront(data);
-        return;
-    }
-
-    newNode = (struct Node*)malloc(sizeof(struct Node));
-    newNode->data = data;
-
-    for (i = 1; i < pos - 1 && temp != NULL; i++)
-        temp = temp->next;
-
-    if (temp == NULL || temp->next == NULL) {
-        insertAtEnd(data);
-        return;
-    }
-
-    newNode->next = temp->next;
-    newNode->prev = temp;
-    temp->next->prev = newNode;
-    temp->next = newNode;
+if (temp == NULL) {
+printf("Node not found.\n");
+return;
 }
 
+newNode = (struct Node*) malloc(sizeof(struct Node));
+newNode->data = data;
 
-void deleteAtFront() {
-    struct Node *temp;
+newNode->next = temp;
+newNode->prev = temp->prev;
 
-    if (head == NULL) {
-        printf("List is empty!\n");
-        return;
-    }
+if (temp->prev != NULL)
+temp->prev->next = newNode;
+else
+head = newNode;
 
-    temp = head;
-    head = head->next;
-
-    if (head != NULL)
-        head->prev = NULL;
-    else
-        tail = NULL;
-
-    free(temp);
+temp->prev = newNode;
 }
 
+/* Delete by value */
+void deleteValue(int key) {
+struct Node *temp = head;
 
-void deleteAtEnd() {
-    struct Node *temp;
-
-    if (tail == NULL) {
-        printf("List is empty!\n");
-        return;
-    }
-
-    temp = tail;
-    tail = tail->prev;
-
-    if (tail != NULL)
-        tail->next = NULL;
-    else
-        head = NULL;
-
-    free(temp);
+while (temp != NULL && temp->data != key) {
+temp = temp->next;
 }
 
-
-void deleteByValue(int value) {
-    struct Node *temp = head;
-
-    if (head == NULL) {
-        printf("List is empty!\n");
-        return;
-    }
-
-    while (temp != NULL && temp->data != value)
-        temp = temp->next;
-
-    if (temp == NULL) {
-        printf("Value not found!\n");
-        return;
-    }
-
-    if (temp == head)
-        deleteAtFront();
-    else if (temp == tail)
-        deleteAtEnd();
-    else {
-        temp->prev->next = temp->next;
-        temp->next->prev = temp->prev;
-        free(temp);
-    }
+if (temp == NULL) {
+printf("Value not found.\n");
+return;
 }
 
+if (temp->prev != NULL)
+temp->prev->next = temp->next;
+else
+head = temp->next;
 
-void search(int value) {
-    struct Node *temp = head;
-    int pos = 1;
+if (temp->next != NULL)
+temp->next->prev = temp->prev;
+else
+tail = temp->prev;
 
-    while (temp != NULL) {
-        if (temp->data == value) {
-            printf("Value %d found at position %d\n", value, pos);
-            return;
-        }
-        temp = temp->next;
-        pos++;
-    }
-
-    printf("Value %d not found in the list.\n", value);
+free(temp);
 }
 
+/* Display */
+void display() {
+struct Node *temp = head;
 
-void displayForward() {
-    struct Node *temp = head;
-    printf("List (Forward): ");
-
-    while (temp != NULL) {
-        printf("%d <-> ", temp->data);
-        temp = temp->next;
-    }
-    printf("NULL\n");
+printf("\nList : ");
+while (temp != NULL) {
+printf("%d ", temp->data);
+temp = temp->next;
 }
-
-
-void displayBackward() {
-    struct Node *temp = tail;
-    printf("List (Backward): ");
-
-    while (temp != NULL) {
-        printf("%d <-> ", temp->data);
-        temp = temp->prev;
-    }
-    printf("NULL\n");
+printf("\n");
 }
-
 
 int main() {
-    int n;
+int n, ch, data, key;
 
-    printf("Enter number of nodes to create: ");
-    scanf("%d", &n);
-    createList(n);
+printf("Enter number of nodes : ");
+scanf("%d", &n);
 
-    displayForward();
-    displayBackward();
+createList(n);
+display();
 
-    insertAtFront(10);
-    insertAtEnd(99);
-    insertAtPosition(77, 3);
+while (1) {
+printf("\n1. Insert Left\n");
+printf("2. Delete\n");
+printf("3. Display\n");
+printf("4. Exit\n");
+printf("Enter choice : ");
+scanf("%d", &ch);
 
-    displayForward();
+switch (ch) {
+case 1:
+printf("Enter existing value : ");
+scanf("%d", &key);
+printf("Enter data : ");
+scanf("%d", &data);
+insertLeft(key, data);
+break;
 
-    deleteAtFront();
-    deleteAtEnd();
-    deleteByValue(77);
+case 2:
+printf("Enter value to delete : ");
+scanf("%d", &key);
+deleteValue(key);
+break;
 
-    displayForward();
+case 3:
+display();
+break;
 
-    search(99);
+case 4:
+exit(0);
+}
+}
 
-    return 0;
+return 0;
 }
